@@ -1,0 +1,104 @@
+<html>
+	<head>
+		<script src="jquery-2.2.3.min.js"></script>
+		<style type="text/css"> 
+			div {
+				top:10px;
+				color:rgb(0, 0, 0);
+				font-size: 20px;
+				font-family:cursive;
+			}
+			span {
+				font-family:fantasy;
+				font-size: 30px;
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="game" width="720" height="540" style="top:0;left:0;"></canvas>
+		<div>score: <span id="score">0</span></div>
+		<script language="javascript">
+		var x = 360;
+		var y = 270;
+		var X = [];
+		var Y = [];
+		var d = 90;
+		var i = 0;
+		var l = 25;
+		var a = Math.ceil(Math.random() * 700) + 10;
+		var b = Math.ceil(Math.random() * 520) + 10;
+		var on = true;
+		var score = 0;
+		function draw() {
+			var canvas = document.getElementById("game");
+      		if (canvas.getContext && on == true) {
+       			var ctx = canvas.getContext("2d");
+       			if (d == 0) {
+       				y = y - 2 - (l * 0.02);
+       				if (y < 4) {
+       					on = false;
+       				}
+       			}else if (d == 90) {
+       				x = x + 2 + (l * 0.02);
+       				if (x > 708) {
+       					on = false;
+       				}
+       			}else if (d == 180) {
+       				y = y + 2 + (l * 0.02);
+       				if (y > 528) {
+       					on = false;
+       				}
+       			}else if (d == 270) {
+       				x = x - 2 - (l * 0.02);
+       				if (x < 4) {
+       					on = false;
+       				}
+       			}
+       			ctx.clearRect(0, 0, 720, 540);
+       			ctx.fillRect(a, b, 10, 10);
+       			ctx.strokeRect(0, 0, 720, 540);
+       			ctx.strokeRect(1, 1, 718, 538);
+       			i++;
+   				for (var j = 0; j < l; j++) {
+   					X[j] = X[j + 1];
+       				Y[j] = Y[j + 1];
+   				}
+   				X[l - 1] = x;
+   				Y[l - 1] = y;
+   				for (var j = 0; j < l; j++) {
+   					if (X[j] >= 0 && X[j] <= 720 && Y[j] >= 0 && Y[j] <= 540) {
+   						ctx.fillRect(X[j], Y[j], 10, 10);
+   					}
+   					if (X[l - 1] >= X[j] && X[l - 1] <= X[j] + 10 && Y[l - 1] >= Y[j] && Y[l - 1] <= Y[j] + 10 && j < l - 9) {
+						on = false;
+   					}
+   				}
+				if ((x >= a - 10 && x <= a + 10) && (y >= b - 10 && y <= b + 10)) {
+					a = Math.ceil(Math.random() * 700) + 10;
+					b = Math.ceil(Math.random() * 520) + 10;
+					l = l + 5;
+					for (var j = l - 1; j > -l; j--) {
+						X[j] = X[j - 5];
+						Y[j] = Y[j - 5];
+					}
+					score++;
+					$("#score").text(score);
+				}
+       		}
+		}
+		function changeDirection(event) {
+			if (event.which == 97 && d != 90) {
+				d = 270;
+			}else if (event.which == 119 && d != 180) {
+				d = 0;
+			}else if (event.which == 100 && d != 270) {
+				d = 90;
+			}else if (event.which == 115 && d != 0) {
+				d = 180;
+			}
+		}
+		var intervalID = setInterval(draw,25);
+		$("body").on("keypress",changeDirection);
+		</script>
+	</body>
+</html>
